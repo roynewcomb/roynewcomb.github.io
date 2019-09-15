@@ -2,3 +2,7 @@ body {
     background-color: whitesmoke;
     color: darkblue;
 }
+
+.roy {
+    min-height: 100vh;
+}
