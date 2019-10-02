@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<title>Text to Speech</title>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col">
+					<div class="form-control">
+						<input type="text" class="input-text" id="inputText" value="Hello world.">
+                    </div>
+                    <div class="form-control">
+                        <button class="btn btn-primary btn-speak" type="button" id="btnSpeak">Speak</button>
+                    </div>
+				</div>
+			</div>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            var $btnSpeak = $('.btn-speak');
+            var $inputText = $('.input-text');
+            var speechSynthesisAvailable = 'speechSynthesis' in window;
+            var ie = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+            
+            if (!speechSynthesisAvailable && !ie) {
+                $btnSpeak.attr('hidden', 'hidden');
+            }
+
+            function loadVoices() {
+                if (speechSynthesisAvailable) {
+                    var voices = speechSynthesis.getVoices();
+                }
+            }
+
+            // Execute loadVoices
+            loadVoices();
+
+            // Chrome loads voices asynchronously
+            if (speechSynthesisAvailable) {
+                window.speechSynthesis.onvoiceschanged = function (e) {
+                    loadVoices();
+                };
+            }
+
+            function textToSpeech(text) {
+                if (text.length) {
+                    if (speechSynthesisAvailable) {
+                        var msg = new SpeechSynthesisUtterance();
+                        var voices = window.speechSynthesis.getVoices();
+                        //msg.voice = voices[1]; // Note: some voices don't support altering params  // Chrome loads voices asynchronously, values may change between events
+                        //msg.voice = voices.filter(function (voice) { return voice.name == "Microsoft David Desktop - English (United States)"; })[0];
+                        msg.voice = voices.filter(function (voice) { return voice.name == "Microsoft Zira Desktop - English (United States)"; })[0];
+                        msg.voiceURI = 'native';
+                        msg.volume = 1; // 0 to 1
+                        msg.rate = 1; // 0.1 to 10
+                        msg.pitch = 1; //0 to 2
+                        msg.text = text;
+                        msg.lang = 'en-US';
+
+                        speechSynthesis.speak(msg);
+                    } else if (ie) {
+                        var voiceObj = new ActiveXObject("Sapi.spVoice");
+                        voiceObj.Voice = voiceObj.GetVoices().Item(1); 
+                        voiceObj.Speak(text);
+                    }
+                }
+            }
+
+            $btnSpeak.on('click', function () {
+                textToSpeech($inputText.val());
+                //setFormFocus();
+            });
+        
+        </script>
+	</body>
+</html>
