@@ -67,9 +67,13 @@
 
                         speechSynthesis.speak(msg);
                     } else if (ie) {
-                        var voiceObj = new ActiveXObject("Sapi.spVoice");
-                        voiceObj.Voice = voiceObj.GetVoices().Item(1); 
-                        voiceObj.Speak(text);
+                        try {
+                            var voiceObj = new ActiveXObject("Sapi.spVoice");
+                            voiceObj.Voice = voiceObj.GetVoices().Item(1); 
+                            voiceObj.Speak(text);
+                        } catch(e) {
+                            alert('Please enable ActiveX Objects in your Internet Options settings.');
+                        }
                     }
                 }
             }
