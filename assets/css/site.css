@@ -3,6 +3,27 @@ body {
     /* color: darkblue; */
 }
 
-h2 {
+.container-fluid, .container {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+h2, h4 {
     color: darkblue;
+}
+
+.banner{
+    background-image: url("/assets/img/code_bg.jpg");
+    background-color: #cccccc;
+    height: 200px;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.banner-profile-pic {
+    clip: rect(200px 200px 200px 200px);
+    border: none;
+    padding:0;
+    margin:0;
 }
