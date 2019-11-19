@@ -22,12 +22,20 @@
                             <h1 class="text-center">Azure Maps API</h1>
                         </div>
                         <div class="card-body">
-                            <label for="zipCode1">Zip Code</label>
-                            <input id ="zipCode1" type="text" value="57106" />
-                            <label>County</label>
-                            <select id="county1">
-                                <option value="">Select a county</option>
-                            </select>
+                            <div class="form-group">
+                                    <label for="zipCode1">Zip Code</label>
+                                    <input id="zipCode1" type="text"  class="form-control" value="" />
+                            </div>
+                            <div class="form-group">
+                                    <label>County</label>
+                                    <select id="county1" class="form-control">
+                                        <option value="">Select a county</option>
+                                    </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="azureKey">Key</label>
+                                <input id="azureKey" type="text" class="form-control" value="" />
+                            </div>
                             <button class="btn btn-primary btn-speak float-right mb-3" type="button" id="btnAzure">Get</button>
                         </div>
                     </div>                              
@@ -40,14 +48,22 @@
                             <h1 class="text-center">Google Maps API</h1>
                         </div>
                         <div class="card-body">
-                            <label for="zipCode2">Zip Code</label>
-                            <input id ="zipCode2" type="text" value="" />
-                            <label>County</label>
-                            <select id="county2">
-                                <option value="">Select a county</option>
-                            </select>
-                            <button class="btn btn-primary btn-speak float-right mb-3" type="button" id="btnGoogle">Get</button>
-                        </div>
+                                <div class="form-group">
+                                        <label for="zipCode2">Zip Code</label>
+                                        <input id="zipCode2" type="text"  class="form-control" value="" />
+                                </div>
+                                <div class="form-group">
+                                        <label>County</label>
+                                        <select id="county2" class="form-control">
+                                            <option value="">Select a county</option>
+                                        </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="googleKey">Key</label>
+                                    <input id="googleKey" type="text" class="form-control" value="" />
+                                </div>
+                                <button class="btn btn-primary btn-speak float-right mb-3" type="button" id="btnGoogle">Get</button>
+                            </div>
                     </div>                              
                 </div>
             </div>
@@ -57,11 +73,11 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script>
 
-            function lookupCountyWithAzure(zipCode) {
+            function lookupCountyWithAzure(zipCode, key) {
                 
                 $.ajax({
                     type: 'GET',
-                    url: 'https://atlas.microsoft.com/search/address/structured/json?subscription-key=CWtcUR9fHewNulpfDtR42VcL2dy0h1t9uNnZDXpOTKo&api-version=1.0&countryCode=US&postalCode=' + zipCode,
+                    url: 'https://atlas.microsoft.com/search/address/structured/json?subscription-key=' + key + '&api-version=1.0&countryCode=US&postalCode=' + zipCode,
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -83,7 +99,7 @@
             $(document).ready(function(){
 
                 $('#btnAzure').on('click', function(){
-                    lookupCountyWithAzure($('#zipCode1').val());
+                    lookupCountyWithAzure($('#zipCode1').val(), $('#azureKey').val());
                 });
 
             });           
