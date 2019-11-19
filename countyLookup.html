@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="description" content="County lookup by Zip Code test.">
+		<meta name="keywords" content="Azure, JavaScript, JQuery, Bootstrap, HTML5, CSS, REST API, JSON">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/assets/css/site.css">
+		<style type="text/css"></style>
+		<title>County Lookup</title>
+	</head>
+	<body>
+		<div class="container">
+            <h1 class="text-center">County Lookup</h1>
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12 align-self-center"></div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="text-center">Azure Maps API</h1>
+                        </div>
+                        <div class="card-body">
+                            <label for="zipCode1">Zip Code</label>
+                            <input id ="zipCode1" type="text" value="57106" />
+                            <label>County</label>
+                            <select id="county1">
+                                <option value="">Select a county</option>
+                            </select>
+                            <button class="btn btn-primary btn-speak float-right mb-3" type="button" id="btnAzure">Get</button>
+                        </div>
+                    </div>                              
+                </div>
+            </div>
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12 align-self-center"></div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h1 class="text-center">Google Maps API</h1>
+                        </div>
+                        <div class="card-body">
+                            <label for="zipCode2">Zip Code</label>
+                            <input id ="zipCode2" type="text" value="" />
+                            <label>County</label>
+                            <select id="county2">
+                                <option value="">Select a county</option>
+                            </select>
+                            <button class="btn btn-primary btn-speak float-right mb-3" type="button" id="btnGoogle">Get</button>
+                        </div>
+                    </div>                              
+                </div>
+            </div>
+        </div>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script>
+
+            function lookupCountyWithAzure(zipCode) {
+                
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://atlas.microsoft.com/search/address/structured/json?subscription-key=CWtcUR9fHewNulpfDtR42VcL2dy0h1t9uNnZDXpOTKo&api-version=1.0&countryCode=US&postalCode=' + zipCode,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    success: function (data) {
+                        //var counties = data.results[1].address.countrySecondarySubdivision.split(', ');
+                        var counties = $.grep(data.results, function(e){ return e.type == 'Street' })[0].address.countrySecondarySubdivision.split(', ');
+                        $select = $('#county1');
+                        for (var i = 0; i < counties.length; i++) {
+                            $select.append($('<option />').attr('value', counties[i]).text(counties[i]));
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+
+            }
+
+            $(document).ready(function(){
+
+                $('#btnAzure').on('click', function(){
+                    lookupCountyWithAzure($('#zipCode1').val());
+                });
+
+            });           
+        </script>
+	</body>
+</html>

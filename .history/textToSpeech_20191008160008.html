@@ -149,16 +149,17 @@
 
             function azureSpeak(accessToken, text) {
                 
-                var body = '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-us"><voice xml:lang="en-us" name="en-US-Jessa24kRUS"></voice>' + text + '</speak>';
+                //var body = '<speak version="1.0" xml:lang="en-us"><voice xml:lang="en-us" name="en-US-Jessa24kRUS"></voice>' + text + '</speak>';
                 //var body = '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice  name="Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)">Hello, world!</voice></speak>'
-                
+                var body = string.Format("<speak version='1.0' xmlns='https://www.w3.org/2001/10/synthesis' xml:lang='en-US'><voice name='{0}'>{1}</voice></speak>", "en-US-Jessa24kRUS", text);
+
                 $.ajax({
                     type: 'POST',
                     url: 'https://westus.tts.speech.microsoft.com/cognitiveservices/v1',
                     headers: {
                         'Authorization': 'Bearer ' + accessToken,
                         'cache-control': 'no-cache',
-                        //'User-Agent': 'SpeechTest',
+                        'User-Agent': 'SpeechTest',
                         'X-Microsoft-OutputFormat': 'riff-24khz-16bit-mono-pcm',
                         'Content-Type': 'application/ssml+xml'
                     },
