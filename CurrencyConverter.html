@@ -1,0 +1,268 @@
+<!-- Copyright © 2020 by Roy Newcomb, Newcomb Consulting -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <title>Currency Exchange Converter</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="banner text-center">
+      <h1>Currency Exchange Converter</h1>
+    </header>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <h2 title="US Dollar">USD</h2>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input id="inputUSD" type="text" class="form-control text-right" title="US Dollars" value="1.00" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col">
+            <h2 title="Australian Dollar">AUD</h2>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&times;</span>
+                </div>
+                <input id="rateAUD" type="text" class="form-control text-right" title="Australian Dollar Exchange Rate"
+                  readonly value="" />
+                <div class="input-group-append">
+                  <span class="input-group-text">&equals;</span>
+                </div>
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input id="inputAUD" type="text" class="form-control text-right" title="Australian Dollars" readonly
+                  value="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h2 title="Euro">EUR</h2>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&times;</span>
+                </div>
+                <input id="rateEUR" type="text" class="form-control text-right" title="Euro Exchange Rate" readonly
+                  value="" />
+                <div class="input-group-append">
+                  <span class="input-group-text">&equals;</span>
+                </div>
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&euro;</span>
+                </div>
+                <input id="inputEUR" type="text" class="form-control text-right" title="Euros" readonly value="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h2 title="British Pound">GBP</h2>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&times;</span>
+                </div>
+                <input id="rateGBP" type="text" class="form-control text-right" title="British Pound Exchange Rate"
+                  readonly value="" />
+                <div class="input-group-append">
+                  <span class="input-group-text">&equals;</span>
+                </div>
+                <div class="input-group-prepend">
+                  <span class="input-group-text">&pound;</span>
+                </div>
+                <input id="inputGBP" type="text" class="form-control text-right" title="British Pounds" readonly
+                  value="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col text-right">
+        <button id="btnCalc" type="submit" class="btn btn-primary">Convert</button>
+      </div>
+    </div>
+
+    <div class="modal" id="keyEntry">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Enter API Key</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="fa fa-key input-group-text pt-2"></span>
+              </div>
+              <input id="apiKey" type="text" class="form-control" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script>
+    class StorageKeys {
+      static ApiKey = 'CurrencyConverter_ApiKey';
+      static RateAUD = 'CurrencyConverter_rateAUD';
+      static DateAUD = 'CurrencyConverter_dateAUD';
+      static RateEUR = 'CurrencyConverter_rateEUR';
+      static DateEUR = 'CurrencyConverter_dateEUR';
+      static RateGBP = 'CurrencyConverter_rateGBP';
+      static DateGBP = 'CurrencyConverter_dateGBP';
+    }
+
+    function getApiKey() {
+      let key = localStorage.getItem(StorageKeys.ApiKey);
+      if (key != null && key.length == 0) {
+        key = null;
+      }
+      return key;
+    }
+
+    function storeApiKey() {
+      localStorage.setItem(StorageKeys.ApiKey, $('#apiKey').val());
+    }
+
+    function storeRates() {
+      localStorage.setItem(StorageKeys.RateAUD, $('#rateAUD').val());
+      localStorage.setItem(StorageKeys.DateAUD, Date.now());
+      localStorage.setItem(StorageKeys.RateEUR, $('#rateEUR').val());
+      localStorage.setItem(StorageKeys.DateEUR, Date.now());
+      localStorage.setItem(StorageKeys.RateGBP, $('#rateGBP').val());
+      localStorage.setItem(StorageKeys.DateGBP, Date.now());
+    }
+
+    function doCalc() {
+      let valUSD = $('#inputUSD').val();
+
+      $('#inputAUD').val(formatCurrency(valUSD * $('#rateAUD').val()));
+      $('#inputEUR').val(formatCurrency(valUSD * $('#rateEUR').val()));
+      $('#inputGBP').val(formatCurrency(valUSD * $('#rateGBP').val()));
+    }
+
+    function getRates() {
+      // The API is limited to 1,000 calls per month, and rates are only updated hourly, 
+      // so store results and don't call API more than once per hour.
+      let lastDate = localStorage.getItem(StorageKeys.DateAUD);
+
+      if (lastDate == null || lastDate < (Date.now() - 3600000)) {
+        $.get('https://openexchangerates.org/api/latest.json?app_id=' + getApiKey() + '&symbols=GBP,EUR,AUD', function (data, textStatus, jqXHR) {
+          $('#rateAUD').val(data.rates.AUD);
+          $('#rateEUR').val(data.rates.EUR);
+          $('#rateGBP').val(data.rates.GBP);
+          storeRates();
+          doCalc();
+          // console.log('getRates', 'Got rates from API');
+        });
+      } else {
+        $('#rateAUD').val(localStorage.getItem(StorageKeys.RateAUD));
+        $('#rateEUR').val(localStorage.getItem(StorageKeys.RateEUR));
+        $('#rateGBP').val(localStorage.getItem(StorageKeys.RateGBP));
+        doCalc();
+        // console.log('getRates', 'Got rates from Local Storage');
+      }
+    }
+
+    function isNumeric(val) {
+      if (val !== undefined && !isNaN(val)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function formatCurrency(input) {
+      let output;
+
+      if (isNumeric(input)) {
+        output = input.toFixed(2);
+      } else {
+        output = 0;
+      }
+
+      return output;
+    }
+
+    function calcConversion() {
+
+      if (getApiKey() == null) {
+        $('#keyEntry').modal('show');
+        return false;
+      }
+
+      getRates();
+
+    }
+
+    $(document).ready(function () {
+
+      $('#inputUSD').on('input', function (e) {
+        const regExp = new RegExp(/^\d*\.\d{2}$/);
+
+        if (!regExp.test($(this).val())) {
+          $(this).css('background-color', 'yellow');
+          $('#btnCalc').prop('disabled', true);
+        } else {
+          $(this).css('background-color', 'white');
+          $('#btnCalc').prop('disabled', false);
+        }
+
+      }).on('keypress', function (e) {
+        const keyCode = (e.keyCode ? e.keyCode : e.which);
+
+        if (keyCode == '13') {
+          calcConversion();
+        }
+      });
+
+      $('#btnCalc').on('click', function () {
+        calcConversion();
+      });
+
+      $('#keyEntry').on('shown.bs.modal', function () {
+        $('#apiKey').focus();
+      }).on('hide.bs.modal', function () {
+        storeApiKey();
+      }).on('hidden.bs.modal', function () {
+        $('#inputUSD').focus().select();
+      });
+
+      if (getApiKey() == null) {
+        $('#keyEntry').modal('show');
+      } else {
+        $('#inputUSD').focus().select();
+      }
+    });
+  </script>
+</body>
+
+</html>
